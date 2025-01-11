@@ -1,4 +1,5 @@
 import asyncio
+import socket
 
 import discord
 from discord.ext import commands
@@ -6,10 +7,15 @@ from datetime import datetime, timedelta
 import random
 import os
 from dotenv import load_dotenv
+import logging
 
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger('discord')
+
 words = ["maroc", "casa", "salut", "orange", "math", "element", "pomme"]
 
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
@@ -81,7 +87,9 @@ async def on_message(message):
                         game_state["previousWord"] = word[0]
                         await continue_game(message.channel)
 
-
+    logger.info(f"[on_message] Message received from {message.author} in server '{message.guild.name}'"
+                f" (ID: {message.guild.id}), channel '{message.channel.name}' (ID: {message.channel.id})"
+                f" on bot instance: {socket.gethostname()}")
 
     await bot.process_commands(message)
 
