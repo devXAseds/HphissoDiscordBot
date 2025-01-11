@@ -50,7 +50,7 @@ async def start(ctx):
                     if len(game_state["players"]) == numberOfPlayers-1 :
                         await ctx.send("1 more player needed to start the game.")
                     else :
-                        await ctx.send(f"{numberOfPlayers - len(game_state["players"])} more players needed to start the game.")
+                        await ctx.send(f"{numberOfPlayers - len(game_state['players'])} more players needed to start the game.")
 
             else:
                 await ctx.send(f"{ctx.author.mention} You are already playing in this game.")
@@ -92,11 +92,11 @@ async def start_game(channel):
     gameIsStarted = True
     game_state["previousWord"] = random.choice(words)
     await channel.send(f"Game started! first word is {game_state['previousWord']}.")
-    await channel.send(f"{game_state["players"][game_state["currentPlayer"]].mention} it's you're turn, you have 10 sec the previous word is {game_state['previousWord']}!")
+    await channel.send(f"{game_state['players'][game_state['currentPlayer']].mention} it's you're turn, you have 10 sec the previous word is {game_state['previousWord']}!")
     game_state["lastMsgSentOn"] = datetime.now()
     await asyncio.sleep(10)
     if datetime.now() - game_state["lastMsgSentOn"] >= timedelta(seconds=10):
-        await channel.send(f"{game_state["players"][game_state["currentPlayer"]].mention} {game_state["currentPlayer"]} 10 sec passed without a response you've lost")
+        await channel.send(f"{game_state['players'][game_state['currentPlayer']].mention} {game_state['currentPlayer']} 10 sec passed without a response you've lost")
         game_state["players"].pop(game_state["currentPlayer"])
         if len(game_state["players"]) == 1:
             await end_game(channel)
@@ -114,11 +114,11 @@ async def continue_game(channel):
             await end_game(channel)
         else:
             game_state["currentPlayer"] = (game_state["currentPlayer"] + 1) % len(game_state["players"])
-            await channel.send(f"{game_state["players"][game_state["currentPlayer"]].mention} it's you're turn, you have 10 sec the previous word is {game_state['previousWord']}!")
+            await channel.send(f"{game_state['players'][game_state['currentPlayer']].mention} it's you're turn, you have 10 sec the previous word is {game_state['previousWord']}!")
             game_state["lastMsgSentOn"] = datetime.now()
             await asyncio.sleep(10)
             if datetime.now() - game_state["lastMsgSentOn"] >= timedelta(seconds=10):
-                await channel.send(f"{game_state["players"][game_state["currentPlayer"]].mention} {game_state["currentPlayer"]} 10 sec passed without a response you've lost")
+                await channel.send(f"{game_state['players'][game_state['currentPlayer']].mention} {game_state['currentPlayer']} 10 sec passed without a response you've lost")
                 game_state["players"].pop(game_state["currentPlayer"])
                 await continue_game(channel)
 
@@ -129,7 +129,7 @@ async def end_game(channel):
     global game_state
     global gameIsStarted
     await channel.send("Game ended!")
-    await channel.send(f"Congrats {game_state["players"][0].mention} you're the winnner !")
+    await channel.send(f"Congrats {game_state['players'][0].mention} you're the winnner !")
     gameIsStarted = False
     game_state["players"].clear()
     game_state["currentPlayer"] = 0
