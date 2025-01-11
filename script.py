@@ -77,7 +77,7 @@ async def on_message(message):
             elif message.author.id != game_state["players"][game_state["currentPlayer"]].id:
                 await message.channel.send(f"{message.author.mention} it's not your turn.")
             else :
-                if message.content in words:
+                if message.content in game_state["words"]:
                     await message.channel.send(f"Oops that's been already used, Sorry {game_state['players'][game_state['currentPlayer']].mention} You'll be eliminated")
                     eliminate_player(game_state["currentPlayer"])
                     await continue_game(message.channel)
