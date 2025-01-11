@@ -87,7 +87,7 @@ async def on_message(message):
                         game_state["previousWord"] = word[0]
                         await continue_game(message.channel)
 
-    message.channel.send(f"[on_message] Message received from {message.author}'"
+    await message.channel.send(f"[on_message] Message received from {message.author}'"
                 f" (channel '{message.channel.name}' (ID: {message.channel.id})"
                 f" on bot instance: {socket.gethostname()}")
 
