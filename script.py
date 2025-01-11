@@ -4,7 +4,12 @@ import discord
 from discord.ext import commands
 from datetime import datetime, timedelta
 import random
+import os
+from dotenv import load_dotenv
 
+
+load_dotenv()
+TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 words = ["maroc", "casa", "salut", "orange", "math", "element", "pomme"]
 
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
@@ -132,7 +137,7 @@ async def end_game(channel):
 
 
 
-bot.run('MTMyMTQyNDY5NDM3NjY2NTE1MA.Gcdhx_.4sOsoJSV4EPr-hv4nTwSBkjG9z0_yyJNPxVZA0')
+bot.run(TOKEN)
 
 
 
