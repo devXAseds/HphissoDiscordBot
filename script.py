@@ -87,8 +87,8 @@ async def on_message(message):
                         game_state["previousWord"] = word[0]
                         await continue_game(message.channel)
 
-    logger.info(f"[on_message] Message received from {message.author} in server '{message.guild.name}'"
-                f" (ID: {message.guild.id}), channel '{message.channel.name}' (ID: {message.channel.id})"
+    logger.info(f"[on_message] Message received from {message.author}'"
+                f" (channel '{message.channel.name}' (ID: {message.channel.id})"
                 f" on bot instance: {socket.gethostname()}")
 
     await bot.process_commands(message)
