@@ -137,7 +137,7 @@ async def continue_game(channel):
 
 def eliminate_player(current:int):
     global game_state
-    game_state["players"][current].pop(player)
+    game_state["players"].pop(current)
 
 
 
