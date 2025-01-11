@@ -78,8 +78,8 @@ async def on_message(message):
                 await message.channel.send(f"{message.author.mention} it's not your turn.")
             else :
                 if message.content in words:
-                    eliminate_player(game_state["currentPlayer"])
                     await message.channel.send(f"Oops that's been already used, Sorry {game_state['players'][game_state['currentPlayer']].mention} You'll be eliminated")
+                    eliminate_player(game_state["currentPlayer"])
                     await continue_game(message.channel)
                 word = message.content = message.content.lower().split()
                 if len(word) > 1 :
@@ -88,8 +88,8 @@ async def on_message(message):
                     await message.channel.send("You should enter a single word containing at least 3 characters.")
                 else :
                     if word[0][0] != game_state["previousWord"][-1] or game_state["forbiddenChar"] in word[0]:
-                        eliminate_player(game_state["currentPlayer"])
                         await message.channel.send(f"Oops that's not valid, Sorry {game_state['players'][game_state['currentPlayer']].mention} You'll be eliminated")
+                        eliminate_player(game_state["currentPlayer"])
                         await continue_game(message.channel)
                     else :
                         game_state["previousWord"] = word[0]
