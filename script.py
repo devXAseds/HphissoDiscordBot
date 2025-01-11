@@ -64,15 +64,17 @@ async def start(ctx):
 @bot.command()
 async def stop(ctx):
     global game_state
+    global gameIsStarted
     if ctx.channel.id == GAME_CHANNEL_ID:
         if gameIsStarted :
             if ctx.author not in game_state["players"]:
-                await ctx.send(f"Sorry @{ctx.author.name} you aren't playing in this game, so you are not allowed to send commands or messages")
+                await ctx.send(f"Sorry {ctx.author.mention} you aren't playing in this game, so you are not allowed to send commands or messages")
             else :
                 await ctx.send(f"{ctx.author.mention}Stopping game...")
                 game_state["players"].clear()
                 game_state["current"] = 0
                 game_state["words"].clear()
+                gameIsStarted = False
                 await ctx.send(f"{ctx.author.mention}Successfully stopped the game...")
         else :
             await ctx.send(f"Sorry no game is started.")
