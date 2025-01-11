@@ -17,7 +17,7 @@ logger = logging.getLogger('discord')
 words = ["maroc", "casa", "salut", "orange", "math", "element", "pomme"]
 alphabets = [chr(x) for x in range(ord('a'), ord('z')+1)]
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
-GAME_CHANNEL_ID = 1321990636169330778
+GAME_CHANNEL_ID = 1319401478884032640
 
 game_state = {
     "players": [],
@@ -78,6 +78,25 @@ async def stop(ctx):
                 await ctx.send(f"{ctx.author.mention}Successfully stopped the game...")
         else :
             await ctx.send(f"Sorry no game is started.")
+
+
+@bot.command()
+async def rules(ctx):
+    # Vérifier si la commande est appelée dans le bon salon
+    if ctx.channel.id == 1319401478884032636:
+        rules_message = (
+            "*Règles du jeu :*\n"
+            "1. Le jeu commence avec un mot initial aléatoire.\n"
+            "2. Chaque joueur doit proposer un mot qui commence par la dernière lettre du mot précédent.\n"
+            "3. Le mot proposé ne doit pas contenir la lettre interdite.\n"
+            "4. Les mots doivent être uniques : un mot déjà utilisé est invalide.\n"
+            "5. Chaque joueur a *10 secondes* pour répondre à son tour.\n"
+            "6. Si un joueur ne répond pas dans le temps imparti ou enfreint une règle, il est éliminé.\n"
+            "7. Le dernier joueur restant est le gagnant.\n"
+        )
+        await ctx.send(rules_message)
+    else:
+        await ctx.send("Cette commande est uniquement disponible dans le salon des règles.")
 
 
 
