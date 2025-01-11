@@ -95,6 +95,7 @@ async def on_message(message):
             else :
                 if message.content in game_state["words"]:
                     await message.channel.send(f"Oops that's been already used, Sorry {game_state['players'][game_state['currentPlayer']].mention} You'll be eliminated")
+                    game_state["lastMsgSentOn"] = datetime.now()
                     eliminate_player(game_state["currentPlayer"])
                     await continue_game(message.channel)
                 word = message.content = message.content.lower().split()
@@ -105,6 +106,7 @@ async def on_message(message):
                 else :
                     if word[0][0] != game_state["previousWord"][-1] or game_state["forbiddenChar"] in word[0]:
                         await message.channel.send(f"Oops that's not valid, Sorry {game_state['players'][game_state['currentPlayer']].mention} You'll be eliminated")
+                        game_state["lastMsgSentOn"] = datetime.now()
                         eliminate_player(game_state["currentPlayer"])
                         await continue_game(message.channel)
                     else :
