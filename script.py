@@ -2,6 +2,7 @@ import asyncio
 import socket
 
 import discord
+from discord import player
 from discord.ext import commands
 from datetime import datetime, timedelta
 import random
@@ -24,6 +25,7 @@ GAME_CHANNEL_ID = 1321990636169330778
 game_state = {
     "players": [],
     "previousWords": "",
+    "words": [],
     "currentPlayer": 0,
     "lastMsgSentOn": datetime.now(),
     "forbiddenChar": 'm',
@@ -54,7 +56,7 @@ async def start(ctx):
                     await start_game(ctx.channel)
                 else :
                     if len(game_state["players"]) == numberOfPlayers-1 :
-                        await ctx.send("1 more player needed to start the game.")
+                        await ctx.send("1 more player is needed to start the game.")
                     else :
                         await ctx.send(f"{numberOfPlayers - len(game_state['players'])} more players needed to start the game.")
 
@@ -75,6 +77,9 @@ async def on_message(message):
             elif message.author.id != game_state["players"][game_state["currentPlayer"]].id:
                 await message.channel.send(f"{message.author.mention} it's not your turn.")
             else :
+                if message.content in words:
+                    eliminate_player(game_state["currentPlayer"])
+                    await message.channel.send(f"Oops that's been already used, Sorry {game_state['player'][game_state['currentPlayer']].mention} You'll be eliminated")
                 word = message.content = message.content.lower().split()
                 if len(word) > 1 :
                     await message.channel.send("You should enter a single word.")
@@ -82,14 +87,13 @@ async def on_message(message):
                     await message.channel.send("You should enter a single word containing at least 3 characters.")
                 else :
                     if word[0][0] != game_state["previousWord"][-1] or game_state["forbiddenChar"] in word[0]:
-                        await message.channel.send(f"You should enter a single word containing at least 3 characters, starting with the last character of the previous word, and it shouldn't contain : {game_state['forbiddenChar']}")
+                        eliminate_player(game_state["currentPlayer"])
+                        await message.channel.send(f"Oops that's not valid, Sorry {game_state['player'][game_state['currentPlayer']].mention} You'll be eliminated")
                     else :
                         game_state["previousWord"] = word[0]
+                        game_state["words"].append(word[0])
                         await continue_game(message.channel)
 
-    await message.channel.send(f"[on_message] Message received from {message.author}'"
-                f" (channel '{message.channel.name}' (ID: {message.channel.id})"
-                f" on bot instance: {socket.gethostname()}")
 
     await bot.process_commands(message)
 
@@ -105,7 +109,7 @@ async def start_game(channel):
     await asyncio.sleep(10)
     if datetime.now() - game_state["lastMsgSentOn"] >= timedelta(seconds=10):
         await channel.send(f"{game_state['players'][game_state['currentPlayer']].mention} {game_state['currentPlayer']} 10 sec passed without a response you've lost")
-        game_state["players"].pop(game_state["currentPlayer"])
+        eliminate_player(game_state["currentPlayer"])
         if len(game_state["players"]) == 1:
             await end_game(channel)
         else:
@@ -126,10 +130,14 @@ async def continue_game(channel):
             game_state["lastMsgSentOn"] = datetime.now()
             await asyncio.sleep(10)
             if datetime.now() - game_state["lastMsgSentOn"] >= timedelta(seconds=10):
-                await channel.send(f"{game_state['players'][game_state['currentPlayer']].mention} {game_state['currentPlayer']} 10 sec passed without a response you've lost")
-                game_state["players"].pop(game_state["currentPlayer"])
+                await channel.send(f"{game_state['players'][game_state['currentPlayer']].mention} 10 sec passed without a response you've lost")
+                eliminate_player(game_state["currentPlayer"])
                 await continue_game(channel)
 
+
+def eliminate_player(current:int):
+    global game_state
+    game_state["players"][current].pop(player)
 
 
 
@@ -140,6 +148,7 @@ async def end_game(channel):
     await channel.send(f"Congrats {game_state['players'][0].mention} you're the winnner !")
     gameIsStarted = False
     game_state["players"].clear()
+    game_state["words"].clear()
     game_state["currentPlayer"] = 0
 
 
