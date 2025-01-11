@@ -76,7 +76,7 @@ async def on_message(message):
                     await message.channel.send("You should enter a single word containing at least 3 characters.")
                 else :
                     if word[0][0] != game_state["previousWord"][-1] or game_state["forbiddenChar"] in word[0]:
-                        await message.channel.send(f"You should enter a single word containing at least 3 characters, starting with the last character of the previous word, and it shouldn't contain : {game_state["forbiddenChar"]}")
+                        await message.channel.send(f"You should enter a single word containing at least 3 characters, starting with the last character of the previous word, and it shouldn't contain : {game_state['forbiddenChar']}")
                     else :
                         game_state["previousWord"] = word[0]
                         await continue_game(message.channel)
