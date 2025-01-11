@@ -1,15 +1,12 @@
 import asyncio
-import socket
 
 import discord
-from discord import player
 from discord.ext import commands
 from datetime import datetime, timedelta
 import random
 import os
 from dotenv import load_dotenv
 import logging
-
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
@@ -18,7 +15,7 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger('discord')
 
 words = ["maroc", "casa", "salut", "orange", "math", "element", "pomme"]
-
+alphabets = [chr(x) for x in range(ord('a'), ord('z')+1)]
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 GAME_CHANNEL_ID = 1321990636169330778
 
@@ -28,7 +25,7 @@ game_state = {
     "words": [],
     "currentPlayer": 0,
     "lastMsgSentOn": datetime.now(),
-    "forbiddenChar": 'm',
+    "forbiddenChar": '',
 }
 numberOfPlayers = 2
 gameIsStarted = False
@@ -62,6 +59,23 @@ async def start(ctx):
 
             else:
                 await ctx.send(f"{ctx.author.mention} You are already playing in this game.")
+
+
+@bot.command()
+async def stop(ctx):
+    global game_state
+    if ctx.channel.id == GAME_CHANNEL_ID:
+        if gameIsStarted :
+            if ctx.author not in game_state["players"]:
+                await ctx.send(f"Sorry @{ctx.author.name} you aren't playing in this game, so you are not allowed to send commands or messages")
+            else :
+                await ctx.send(f"{ctx.author.mention}Stopping game...")
+                game_state["players"].clear()
+                game_state["current"] = 0
+                game_state["words"].clear()
+                await ctx.send(f"{ctx.author.mention}Successfully stopped the game...")
+        else :
+            await ctx.send(f"Sorry no game is started.")
 
 
 
@@ -105,7 +119,8 @@ async def start_game(channel):
     global gameIsStarted
     gameIsStarted = True
     game_state["previousWord"] = random.choice(words)
-    await channel.send(f"Game started! first word is {game_state['previousWord']}.")
+    game_state["forbiddenChar"] = random.choice(alphabets)
+    await channel.send(f"Game started! first word is {game_state['previousWord']}, and forbidden alphabet is {game_state['forbiddenChar']}.")
     await channel.send(f"{game_state['players'][game_state['currentPlayer']].mention} it's you're turn, you have 10 sec the previous word is {game_state['previousWord']}!")
     game_state["lastMsgSentOn"] = datetime.now()
     await asyncio.sleep(10)
